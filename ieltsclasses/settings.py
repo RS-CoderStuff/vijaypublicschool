@@ -25,7 +25,7 @@ SECRET_KEY = 'go1(-er^l&1r$g^7)pgv)g_r9ugc%uwq6(@mi+!&0cnn3sau2#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 # DEBUG = False
-
+LOGOUT_REDIRECT_URL = '/'
 ALLOWED_HOSTS = ['*','192.168.1.10']
 
 WEB_SITE_URL = 'http://ec2-18-218-21-56.us-east-2.compute.amazonaws.com/'
