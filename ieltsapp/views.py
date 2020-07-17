@@ -805,7 +805,7 @@ def load_user(request):
         userList = User.objects.filter(user_type__in = [1,2])
     else:
         list = User_Profile.objects.filter(main_course_category_id=main_course_category_id)
-        userList = User.objects.filter(Q(user_profile__in=list) | Q(user_type=1)).order_by('user_type')
+        userList = User.objects.filter(Q(user_profile__in=list) & Q(user_type__in= [1,2])).order_by('user_type')
     for ls in userList:
         print(ls.username, ls.user_type)
     return render(request, 'admin/user_dropdown.html',locals())
