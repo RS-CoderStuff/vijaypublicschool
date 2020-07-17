@@ -503,7 +503,7 @@ class Course_Content_Form(forms.ModelForm):
     sub_course_category_id = forms.ModelMultipleChoiceField(label='Course Category',required=True,queryset=Sub_Course_Category_Db.objects.all(),widget=autocomplete.ModelSelect2Multiple(url='Sub_course_category_Autocomplete',attrs={'class': "inputfield"}))
     title = forms.CharField(required=True,max_length=100,widget=forms.TextInput(attrs={'class': "inputfield"}))
     image = forms.ImageField(label='Image',required=False,)
-    pdf = forms.FileField(required=False,label='(.docx, .pptx, .pdf,.txt)')
+    pdf = forms.FileField(required=False,label='(.docx, .pptx, .pdf,.txt,.jpg,.png)')
     details = forms.CharField(required=False, max_length=3000, widget=forms.Textarea(attrs={'class': "form-control",'cols':''}))
     video2 = forms.FileField(required=False,label='(mp3 OR mp4)')
     type = forms.CharField(max_length=10,required=False)
@@ -523,11 +523,12 @@ class Course_Content_Form(forms.ModelForm):
         return video2
     def clean_pdf(self):
         pdf = self.cleaned_data.get('pdf')
+        print(pdf)
         if pdf:
             xxx =smart_str(pdf)
             ext = xxx.split('.')
             print(ext)
-            valid_extensions = ['docx', 'pptx', 'pdf','txt']
+            valid_extensions = ['docx', 'pptx', 'pdf','txt','jpg','.png']
             print(ext[1].lower())
             if not ext[1].lower()  in valid_extensions:
                 raise forms.ValidationError('Unsupported file extension.')
@@ -594,11 +595,17 @@ class Batch_Form(forms.ModelForm):
     description = forms.CharField(required=True,max_length=1000,widget=forms.TextInput(attrs={'class': "inputfield"}))
     start_time = forms.CharField(label='Start Time',required=True,max_length=1000,widget=forms.TextInput(attrs={'class': "inputfield input-small timepicker"}))
     end_time = forms.CharField(label='End Time',required=True,max_length=1000,widget=forms.TextInput(attrs={'class': "inputfield input-small timepicker"}))
-    students = forms.ModelMultipleChoiceField(required=True,queryset=User.objects.filter(user_type=2),widget=autocomplete.ModelSelect2Multiple(url='country-autocomplete',attrs={'class': "inputfield"}))
-    # students = forms.ModelMultipleChoiceField(queryset=User.objects.all(),widget=forms.SelectMultiple(attrs={'class': "inputfield"}))
+    # students = forms.ModelMultipleChoiceField(required=True,queryset=User.objects.filter(user_type=2),widget=autocomplete.ModelSelect2Multiple(url='country-autocomplete',attrs={'class': "inputfield"}))
+    classes = forms.ModelChoiceField(label='Category', required=False,
+                                     queryset=Main_Course_Category_Db.objects.all(),
+                                     empty_label="All User",
+                                     widget=forms.Select(attrs={'class': "inputfield"}))
+    students = forms.ModelMultipleChoiceField(label='Users', queryset=User.objects.filter(user_type__in=[1, 2]),
+                                              widget=forms.SelectMultiple(attrs={'class': "inputfield"}))
+
     class Meta:
         model = Batch_Db
-        fields = ['name', 'description', 'start_time', 'end_time', 'students']
+        fields = ['name', 'description', 'start_time', 'end_time', 'classes', 'students']
     def __init__(self, *args, **kwargs):
         super(Batch_Form, self).__init__(*args, **kwargs)
 

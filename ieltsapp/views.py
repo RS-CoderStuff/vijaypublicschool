@@ -15,6 +15,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from PyODConverter import DocumentConverter
 from pdf2image import convert_from_path
 from fcm_django.models import FCMDevice
+from django.db.models import Q
 import datetime
 
 from apiapp.tokens import account_activation_token
@@ -525,10 +526,12 @@ class User_Edit(LogoutIfNotStaffMixin,View):
     def post(self,request,*args, **kwargs):
         user_id = request.POST['user_id']
         exp_date = request.POST['exp_date']
+        print(exp_date)
         user_type = request.POST['user_type']
         main_course_category_id = request.POST['main_course_category_id']
         main_course_category_id = Main_Course_Category_Db.objects.get(id=main_course_category_id)
         exp_date = datetime.datetime.strptime(exp_date, "%Y-%m-%d").date()
+        print(exp_date)
         if int(user_type) == 1:
             User.objects.filter(pk=user_id).update(user_type=user_type,is_staff=1)
         else:
@@ -795,7 +798,17 @@ def load_sub_course_category(request):
     list = Sub_Course_Category_Db.objects.filter(super_course_category_id=super_course_category_id)
     return render(request, 'admin/main_course_category_dropdown.html',locals())
 
-
+def load_user(request):
+    main_course_category_id = request.GET.get('main_course_category_id')
+    print(main_course_category_id)
+    if main_course_category_id =='':
+        userList = User.objects.filter(user_type__in = [1,2])
+    else:
+        list = User_Profile.objects.filter(main_course_category_id=main_course_category_id)
+        userList = User.objects.filter(Q(user_profile__in=list) | Q(user_type=1)).order_by('user_type')
+    for ls in userList:
+        print(ls.username, ls.user_type)
+    return render(request, 'admin/user_dropdown.html',locals())
 
 
 
@@ -876,7 +889,7 @@ class Add_Course_Content(SuccessMessageMixin,LogoutIfNotStaffMixin,CreateView):
                # content_data = self.model.objects.get(id=xxx.id)
                ext = aaa.split('.')
                if smart_str(ext[1]) != 'pdf':
-                   if smart_str(ext[1]) == 'txt':
+                   if smart_str(ext[1]) == 'txt' :
                        pdf = FPDF()
                        pdf.add_page()
                        pdf.set_font("Arial", size=8)
@@ -886,6 +899,8 @@ class Add_Course_Content(SuccessMessageMixin,LogoutIfNotStaffMixin,CreateView):
                        pdf.output(ext[0] + '.pdf')
                        bbb_1 = ext[0].replace(BASE_DIR + '/uploads/', '')
                        self.model.objects.filter(id=xxx.id).update(pdf=bbb_1 + '.pdf')
+                   elif smart_str(ext[1]) == 'jpg' or smart_str(ext[1]) == 'png' :
+                       print("Successfully save");
                    else:
                        listener = ('127.0.0.1', 2002)
                        converter = DocumentConverter(listener)

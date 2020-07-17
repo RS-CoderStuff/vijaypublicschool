@@ -212,6 +212,9 @@ urlpatterns = [
     url(r'^delete_plan/(?P<pk>\d+)', views.Delete_Plan.as_view(), name='delete_plan'),
     # blog
 
+    # Enchancement
+    url('load_user/', views.load_user, name='load_user'),
+
     # admin URLs end
 # ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 ]
