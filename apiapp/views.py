@@ -163,6 +163,8 @@ class LoginView(GenericAPIView):
            list_data = User_Profile.objects.get(user_id=user_id)
            import datetime
            date_today = datetime.date.today()
+           print(date_today)
+           print(list_data.exp_date)
            if list_data.exp_date >= date_today:
                response = Response({'user_data': serializer.data,'user_type':0,'is_superuser':self.request.user.is_superuser}, status=status.HTTP_200_OK)
            else:

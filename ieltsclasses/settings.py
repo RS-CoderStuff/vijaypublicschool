@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'go1(-er^l&1r$g^7)pgv)g_r9ugc%uwq6(@mi+!&0cnn3sau2#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 # DEBUG = False
 LOGOUT_REDIRECT_URL = '/'
 ALLOWED_HOSTS = ['*','192.168.1.10']
@@ -245,13 +245,13 @@ LOGIN_URL ='/sign-in'
 
 STATIC_URL = '/static/'
 # STATIC_ROOT =''
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 # Add these new lines
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+#STATICFILES_DIRS = (
+#    os.path.join(BASE_DIR, 'static'),
+#)
 #
 
 MEDIA_URL = '/uploads/'
